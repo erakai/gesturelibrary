@@ -1,4 +1,4 @@
-# Gesture-Library
+# GestureLibrary
 
 A game library designed to take webcam data (of a hand) and streamline it into a readable input format.
 
