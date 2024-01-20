@@ -16,12 +16,12 @@ Make sure that you follow the [pyenv](https://github.com/pyenv/pyenv) directions
 
 Now navigate to this direction (`gesture-library/`):
 ```bash
-pyenv install 3.12
-pyenv local 3.12
+pyenv install 3.10.5
+pyenv local 3.10.5
 ```
 
 Now get poetry (our dependency manager), create a virtual environment, and install our dependencies:
-```
+```bash
 pipx install poetry
 poetry shell
 poetry install
