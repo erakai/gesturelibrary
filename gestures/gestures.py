@@ -28,8 +28,10 @@ class GestureStream:
         await self.processor.begin_processing()
 
     def process_into_messages(self, data: FrameData):
+        x, y = self.translator.translate_coords(data)
         msg = GestureMessage(
-            0, 0, possible_gesture_map[self.detector.get_gesture(data)]
+            x, y, 
+            possible_gesture_map[self.detector.get_gesture(data)]
         )
         self.process_data(msg)
 
