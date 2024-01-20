@@ -6,6 +6,7 @@ from media_processing import FrameData, MediaProcessor
 possible_gesture_map = {
     GestureType.OPEN_HAND: "OPEN_HAND",
     GestureType.CLOSED_FIST: "CLOSED_FIST",
+    GestureType.INDEX_EXTENDED: "INDEX_EXTENDED",
     GestureType.NO_HAND: "NO_HAND",
 }
 
