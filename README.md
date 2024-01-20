@@ -12,6 +12,8 @@ brew install pyenv
 brew install pipx
 ```
 
+Make sure that you follow the [pyenv](https://github.com/pyenv/pyenv) directions to set up your shell.
+
 Now navigate to this direction (`gesture-library/`):
 ```bash
 pyenv install 3.12

@@ -1,1 +1,3 @@
-print("Hello world!")
+import mediapipe as mp
+
+BaseOptions = mp.tasks.BaseOptions
