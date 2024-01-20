@@ -1,4 +1,5 @@
-from media_processing import FrameData, Landmarks
+from gestures.media_processing import FrameData, Landmarks
+
 
 class CoordTranslator:
     def __init__(self, dimensions):
@@ -20,8 +21,8 @@ class CoordTranslator:
 
         # POV of camera is flipped horizontally compared to what the user would expect
         # so reverse x direction here
-        centroid_x = 1 + (-1 * ((x1 + x2 + x3)/3))
-        centroid_y = (y1 + y2 + y3)/3
+        centroid_x = 1 + (-1 * ((x1 + x2 + x3) / 3))
+        centroid_y = (y1 + y2 + y3) / 3
 
         # factorize to dimensions
         centroid_x *= self.dimensions[0]

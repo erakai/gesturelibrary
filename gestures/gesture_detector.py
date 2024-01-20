@@ -1,8 +1,8 @@
 from enum import Enum
 from functools import partial
 
-from media_processing import FrameData, Landmarks
-from utils import dist_2d
+from gestures.media_processing import FrameData, Landmarks
+from gestures.utils import dist_2d
 
 """
 To add a new gesture:
