@@ -1,10 +1,14 @@
+import asyncio
 from gestures import GestureWrapper
+from gestures import GestureMessage
 
 
+def process_data(data: GestureMessage):
+    print("Message:", data)
+
+
+# (x, y), fps
 wrapper = GestureWrapper((100, 100))
-stream = wrapper.get_stream()
+stream = wrapper.create_stream(process_data)
 
-while True:
-    print("\n\nPress Enter: ", end="")
-    text = input()
-    print("GESTURE MESSAGE: ", stream.read())
+asyncio.run(stream.begin_read())

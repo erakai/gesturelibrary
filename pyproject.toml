@@ -11,6 +11,7 @@ python = "3.10.5"
 ruff = "0.1.2"
 mediapipe = "^0.10.9"
 opencv-python = "^4.9.0.80"
+ffmpeg = "^1.4"
 
 [build-system]
 requires = ["poetry-core"]

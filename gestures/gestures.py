@@ -1,6 +1,6 @@
 from coord_translator import CoordTranslator
 from gesture_detector import GestureDetector, GestureType
-from media_processing import MediaProcessor
+from media_processing import FrameData, MediaProcessor
 
 
 class GestureMessage:
@@ -11,20 +11,22 @@ class GestureMessage:
 
 
 class GestureStream:
-    def __init__(self, translator, detector):
+    def __init__(self, translator, detector, process_data):
         self.translator = translator
         self.detector = detector
-        self.processor = MediaProcessor()
+        self.process_data = process_data
+        self.processor = MediaProcessor(self.process_into_messages)
 
-    def read(self) -> GestureMessage:
-        frame_data = self.processor.process_frame()
-        print("FOUND DATA: ", frame_data)
+    async def begin_read(self):
+        await self.processor.begin_processing()
 
-        print("COORD TRANSLATOR: ", self.translator.translate_coords(frame_data))
-        print("GESTURE DETECTOR: ", self.detector.get_gesture(frame_data))
+    def process_into_messages(self, data: FrameData):
+        print("Coords:", self.translator.translate_coords(data))
+        print("Gesture:", self.detector.get_gesture(data))
+        msg = GestureMessage(0, 0, GestureType.UNRECOGNIZED)
+        self.process_data(msg)
 
     def close(self) -> None:
-        self.stream.close()
         self.processor.close()
 
 
@@ -35,11 +37,15 @@ class GestureWrapper:
         self.translator = CoordTranslator(webcam_dimensions)
         self.detector = GestureDetector()
 
-    def get_stream(self) -> GestureStream:
+    def create_stream(self, process_data: callable) -> GestureStream:
         if self.stream is not None:
             self.stream.close()
 
-        self.stream = GestureStream(self.translator, self.detector)
+        self.stream = GestureStream(
+            self.translator,
+            self.detector,
+            process_data,
+        )
 
         return self.stream
 

@@ -1,42 +1,41 @@
-# TODO: 
-# all go inside a class
-# while run == 1
-# run this loop and contiually fetches new info
-
-import cv2
 import mediapipe as mp
+import cv2
+import time
 
-# Create a MediaPipe Hands object
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands()
+BaseOptions = mp.tasks.BaseOptions
+HandLandmarker = mp.tasks.vision.HandLandmarker
+HandLandmarkerOptions = mp.tasks.vision.HandLandmarkerOptions
+HandLandmarkerResult = mp.tasks.vision.HandLandmarkerResult
+VisionRunningMode = mp.tasks.vision.RunningMode
 
-# Video capture
 vid = cv2.VideoCapture(0)
 
-while True:
-    ret, frame = vid.read()
-    if not ret:
-        break
 
-    # Convert the BGR image to RGB
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+# Create a hand landmarker instance with the live stream mode:
+def print_result(
+    result: HandLandmarkerResult, output_image: mp.Image, timestamp_ms: int
+):
+    print("hand landmarker result: {}".format(result))
 
-    # Process the frame
-    results = hands.process(frame_rgb)
 
-    # Draw the hand landmarks
-    if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-            mp.solutions.drawing_utils.draw_landmarks(
-                frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-    
-    print(results.multi_hand_landmarks)
+options = HandLandmarkerOptions(
+    base_options=BaseOptions(model_asset_path="../model/hand_landmarker.task"),
+    running_mode=VisionRunningMode.LIVE_STREAM,
+    result_callback=print_result,
+)
+with HandLandmarker.create_from_options(options) as landmarker:
+    # The landmarker is initialized. Use it here.
+    # ...
+    while True:
+        ret, frame = vid.read()
+        if not ret:
+            break
 
-    # Show the frame
-    cv2.imshow('Hand Tracking', frame)
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        timestamp = int(time.perf_counter_ns())
 
-vid.release()
-cv2.destroyAllWindows()
+        landmarker.detect_async(mp_image, timestamp)
+
+    vid.release()
+    cv2.destroyAllWindows()
