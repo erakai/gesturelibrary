@@ -1,8 +1,6 @@
-import io
-from enum import Enum
-from gestures.coord_translating import CoordTranslator
-
-from gestures.gesture_detector import GestureDetector, GestureType
+from coord_translator import CoordTranslator
+from gesture_detector import GestureDetector, GestureType
+from media_processing import MediaProcessor
 
 
 class GestureMessage:
@@ -16,12 +14,18 @@ class GestureStream:
     def __init__(self, translator, detector):
         self.translator = translator
         self.detector = detector
+        self.processor = MediaProcessor()
 
     def read(self) -> GestureMessage:
-        pass
+        frame_data = self.processor.process_frame()
+        print("FOUND DATA: ", frame_data)
+
+        print("COORD TRANSLATOR: ", self.translator.translate_coords(frame_data))
+        print("GESTURE DETECTOR: ", self.detector.get_gesture(frame_data))
 
     def close(self) -> None:
         self.stream.close()
+        self.processor.close()
 
 
 class GestureWrapper:
@@ -33,11 +37,11 @@ class GestureWrapper:
 
     def get_stream(self) -> GestureStream:
         if self.stream is not None:
-            self.close()
+            self.stream.close()
+
         self.stream = GestureStream(self.translator, self.detector)
 
         return self.stream
 
     def close(self) -> None:
         self.stream.close()
-        # self.processor.quit()

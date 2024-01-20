@@ -7,8 +7,8 @@ class GestureType(Enum):
 
 
 class GestureDetector:
-    def __init__():
+    def __init__(self):
         pass
 
-    def get_gesture():
+    def get_gesture(self, frame_data):
         pass
