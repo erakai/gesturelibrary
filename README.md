@@ -46,14 +46,4 @@ Some extensions:
 
 ### Usage
 
-To use, create a `GestureWrapper` and fetch a `GestureStream`:
-```python
-wrapper = GestureWrapper()
-stream = wrapper.get_stream()
-```
-
-Then inside an update loop, you can see if there is any data to get:
-```
-message = stream.read()
-print(f"X: {message.x}, Y: {message.y}, Gesture: {message.gesture}")
-```
+Please see our [API Reference](https://github.com/erakai/gesturelibrary/blob/main/APIReference.md).

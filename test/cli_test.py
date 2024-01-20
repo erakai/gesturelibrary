@@ -1,6 +1,5 @@
 import asyncio
-from gestures import GestureWrapper
-from gestures import GestureMessage
+from gestures.gestures import GestureWrapper, GestureMessage
 
 
 def process_data(data: GestureMessage):
