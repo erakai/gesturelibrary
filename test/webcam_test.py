@@ -19,7 +19,7 @@ def print_result(
 
 
 options = HandLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path="../model/hand_landmarker.task"),
+    base_options=BaseOptions(model_asset_path="model/hand_landmarker.task"),
     running_mode=VisionRunningMode.LIVE_STREAM,
     result_callback=print_result,
 )
