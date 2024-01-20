@@ -4,11 +4,7 @@ from enum import Enum
 import mediapipe as mp
 import cv2
 
-BaseOptions = mp.tasks.BaseOptions
-HandLandmarker = mp.tasks.vision.HandLandmarker
-HandLandmarkerOptions = mp.tasks.vision.HandLandmarkerOptions
-HandLandmarkerResult = mp.tasks.vision.HandLandmarkerResult
-VisionRunningMode = mp.tasks.vision.RunningMode
+mp_hands = mp.solutions.hands
 
 
 class MediaProcessor:
@@ -18,12 +14,12 @@ class MediaProcessor:
         self.data_callback = data_callback
 
     async def begin_processing(self):
-        options = HandLandmarkerOptions(
-            base_options=BaseOptions(model_asset_path="../model/hand_landmarker.task"),
-            running_mode=VisionRunningMode.LIVE_STREAM,
-            result_callback=self.convert_data,
-        )
-        with HandLandmarker.create_from_options(options) as landmarker:
+        with mp_hands.Hands(
+            model_complexity=0,
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.5,
+            max_num_hands=1,
+        ) as hands:
             while True:
                 ret, frame = self.video.read()
 
@@ -31,17 +27,16 @@ class MediaProcessor:
                     print("Error getting frame...")
                     continue
 
-                # Calculate frame time since last frime for mediapipe
-                new_time = perf_counter_ns()
-                frame_time = int((new_time - self.video_start) / 1000000)
-                print("\nFrame Time:", frame_time)
+                frame.flags.writeable = False
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                results = hands.process(frame)
 
-                mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-                landmarker.detect_async(mp_image, frame_time)
+                if results.multi_hand_landmarks:
+                    hand_landmarks = results.multi_hand_landmarks[0]
+                    self.convert_data(hand_landmarks)
 
-    def convert_data(self, results: HandLandmarkerResult, image, time):
-        print("RAW DATA: ", results)
-        converted = FrameData(results.hand_landmarks)
+    def convert_data(self, results):
+        converted = FrameData(results)
         self.data_callback(converted)
 
     def close(self):
@@ -55,7 +50,7 @@ class Landmarks(Enum):
     THUMB_IP = 3
     THUMB_TIP = 4
     INDEX_FINGER_MCP = 5
-    INDEX_FIGHER_PIP = 6
+    INDEX_FINGER_PIP = 6
     INDEX_FINGER_DIP = 7
     INDEX_FINGER_TIP = 8
     MIDDLE_FINGER_MCP = 9
@@ -66,10 +61,10 @@ class Landmarks(Enum):
     RING_FINGER_PIP = 14
     RING_FINGER_DIP = 15
     RING_FINGER_TIP = 16
-    PINKY_MCP = 17
-    PINKY_PIP = 18
-    PINKY_DIP = 19
-    PINKY_TIP = 20
+    PINKY_FINGER_MCP = 17
+    PINKY_FINGER_PIP = 18
+    PINKY_FINGER_DIP = 19
+    PINKY_FINGER_TIP = 20
 
 
 class Coords:
@@ -82,19 +77,23 @@ class Coords:
 class FrameData:
     def __init__(self, raw_data):
         self.raw_data = raw_data
-        self.empty = len(self.raw_data) == 0
+        self.empty = False
         self.data = {}
 
-        self.create_data()
+        self._create_data()
 
-    def create_data(self):
+    def _create_data(self):
         if self.empty:
             return
+        vals = getattr(self.raw_data, "landmark")
         for landmark in Landmarks:
-            vals = self.raw_data[0][landmark.value]
-            self.data[landmark] = Coords(vals.x, vals.y, vals.z)
+            val = vals[landmark.value]
+            x = getattr(val, "x")
+            y = getattr(val, "y")
+            z = getattr(val, "z")
+            self.data[landmark] = Coords(x, y, z)
 
-    def fetch_data(self, landmark: Landmarks) -> Coords:
+    def fetch(self, landmark: Landmarks) -> Coords:
         if self.empty:
-            return (-1, -1, -1)
+            return Coords(-1, -1, -1)
         return self.data[landmark]

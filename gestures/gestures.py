@@ -3,8 +3,15 @@ from gesture_detector import GestureDetector, GestureType
 from media_processing import FrameData, MediaProcessor
 
 
+possible_gesture_map = {
+    GestureType.OPEN_HAND: "OPEN_HAND",
+    GestureType.CLOSED_FIST: "CLOSED_FIST",
+    GestureType.NO_HAND: "NO_HAND",
+}
+
+
 class GestureMessage:
-    def __init__(self, x: int, y: int, gesture: GestureType):
+    def __init__(self, x: int, y: int, gesture: str):
         self.x = x
         self.y = y
         self.gesture = gesture
@@ -21,9 +28,9 @@ class GestureStream:
         await self.processor.begin_processing()
 
     def process_into_messages(self, data: FrameData):
-        print("Coords:", self.translator.translate_coords(data))
-        print("Gesture:", self.detector.get_gesture(data))
-        msg = GestureMessage(0, 0, GestureType.UNRECOGNIZED)
+        msg = GestureMessage(
+            0, 0, possible_gesture_map[self.detector.get_gesture(data)]
+        )
         self.process_data(msg)
 
     def close(self) -> None:

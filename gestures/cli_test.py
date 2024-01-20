@@ -4,7 +4,7 @@ from gestures import GestureMessage
 
 
 def process_data(data: GestureMessage):
-    print("Message:", data)
+    print("Gesture:", data.gesture)
 
 
 # (x, y), fps
