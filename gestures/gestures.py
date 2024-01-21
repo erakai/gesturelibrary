@@ -57,7 +57,7 @@ class GestureStream:
 
 class GestureWrapper:
     def __init__(self, webcam_dimensions: tuple[int, int]):
-        self.dimensions = (0, 0)
+        self.dimensions = webcam_dimensions
         self.stream = None
         self.translator = CoordTranslator(webcam_dimensions)
         self.detector = GestureDetector()
