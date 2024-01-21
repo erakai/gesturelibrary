@@ -13,7 +13,7 @@ class MediaProcessor:
         self.video_start = perf_counter_ns()
         self.data_callback = data_callback
 
-    async def begin_processing(self):
+    def begin_processing(self):
         with mp_hands.Hands(
             model_complexity=0,
             min_detection_confidence=0.5,

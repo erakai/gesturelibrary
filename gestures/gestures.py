@@ -25,8 +25,8 @@ class GestureStream:
         self.process_data = process_data
         self.processor = MediaProcessor(self.process_into_messages)
 
-    async def begin_read(self):
-        await self.processor.begin_processing()
+    def begin_read(self):
+        self.processor.begin_processing()
 
     def process_into_messages(self, data: FrameData):
         x, y = self.translator.translate_coords(data)
