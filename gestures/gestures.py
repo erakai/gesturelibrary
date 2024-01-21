@@ -1,6 +1,6 @@
 from gestures.coord_translator import CoordTranslator
 from gestures.gesture_detector import GestureDetector, GestureType
-from gestures.media_processing import FrameData, Landmarks, MediaProcessor
+from gestures.media_processing import Coords, FrameData, Landmarks, MediaProcessor
 
 
 possible_gesture_map = {
@@ -39,7 +39,9 @@ class GestureStream:
 
     def process_into_messages(self, data: FrameData):
         x, y = self.translator.translate_coords(data)
-        pointer = data.fetch(Landmarks.INDEX_FINGER_TIP)
+        pointer = Coords(0, 0, 0)
+        if not data.empty:
+            pointer = data.fetch(Landmarks.INDEX_FINGER_TIP)
         msg = GestureMessage(
             x,
             y,
