@@ -12,3 +12,5 @@ wrapper = GestureWrapper((100, 100))
 stream = wrapper.create_stream(process_data)
 
 asyncio.run(stream.begin_read())
+
+# bugs: Thumb

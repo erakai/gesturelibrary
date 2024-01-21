@@ -8,6 +8,12 @@ possible_gesture_map = {
     GestureType.CLOSED_FIST: "CLOSED_FIST",
     GestureType.INDEX_EXTENDED: "INDEX_EXTENDED",
     GestureType.NO_HAND: "NO_HAND",
+    GestureType.PEACE_SIGN: "PEACE_SIGN",
+    GestureType.RING_EXTENDED: "RING_EXTENDED",
+    GestureType.MIDDLE_EXTENDED: "MIDDLE_EXTENDED",
+    GestureType.PINKY_EXTENDED: "PINKY_EXTENDED",
+    GestureType.THUMB_EXTENDED: "THUMB_EXTENDED",
+    # GestureType.BEAST_BOY: "BEAST_BOY"
 }
 
 
