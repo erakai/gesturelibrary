@@ -45,7 +45,7 @@ class GestureStream:
         msg = GestureMessage(
             x,
             y,
-            pointer.x * self.dimensions[0],
+            self.dimensions[0] - (pointer.x * self.dimensions[0]),
             pointer.y * self.dimensions[1],
             possible_gesture_map[self.detector.get_gesture(data)],
         )
