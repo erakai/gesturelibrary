@@ -70,6 +70,7 @@ def check_for_index_extended(data) -> bool:
 
     return True
 
+
 def check_for_peace_sign(data) -> bool:
     # If the index finger's PIP is further from the wrist than the other finger's DIP
     wrist = data.fetch(Landmarks.WRIST)
@@ -92,11 +93,12 @@ def check_for_peace_sign(data) -> bool:
             return False
         if dist_2d(x, y, wx, wy) < dist_2d(pinky.x, pinky.y, wx, wy):
             return False
-    
+
     # if dist_2d(middle.x, middle.y, wx, wy) < dist_2d(ring.x, ring.y, wx, wy):
     #     return False
 
     return True
+
 
 def check_for_middle_extended(data) -> bool:
     # If the index finger's PIP is further from the wrist than the other finger's DIP
@@ -123,6 +125,7 @@ def check_for_middle_extended(data) -> bool:
         return False
 
     return True
+
 
 def check_for_ring_extended(data) -> bool:
     # If the index finger's PIP is further from the wrist than the other finger's DIP
@@ -155,6 +158,7 @@ def check_for_ring_extended(data) -> bool:
 
     return True
 
+
 def check_for_pinky_extended(data) -> bool:
     # If the index finger's PIP is further from the wrist than the other finger's DIP
     wrist = data.fetch(Landmarks.WRIST)
@@ -181,31 +185,6 @@ def check_for_pinky_extended(data) -> bool:
 
     return True
 
-def check_for_thumb_extended(data) -> bool:
-    # If the index finger's PIP is further from the wrist than the other finger's DIP
-    wrist = data.fetch(Landmarks.WRIST)
-    wx = wrist.x
-    wy = wrist.y
-
-    finger = data.fetch(Landmarks.THUMB_TIP)
-    x = finger.x
-    y = finger.y
-
-    thumb = data.fetch(Landmarks.PINKY_FINGER_PIP)
-    index = data.fetch(Landmarks.INDEX_FINGER_PIP)
-    ring = data.fetch(Landmarks.RING_FINGER_PIP)
-    middle = data.fetch(Landmarks.MIDDLE_FINGER_PIP)
-
-    if dist_2d(x, y, wx, wy) < dist_2d(thumb.x, thumb.y, wx, wy):
-        return False
-    if dist_2d(x, y, wx, wy) < dist_2d(index.x, index.y, wx, wy):
-        return False
-    if dist_2d(x, y, wx, wy) < dist_2d(ring.x, ring.y, wx, wy):
-        return False
-    if dist_2d(x, y, wx, wy) < dist_2d(middle.x, middle.y, wx, wy):
-        return False
-
-    return True
 
 # def check_for_beastboy(data) -> bool:
 #     # If the index finger's PIP is further from the wrist than the other finger's DIP
@@ -228,6 +207,7 @@ def check_for_thumb_extended(data) -> bool:
 
 #     return True
 
+
 def check_for_open_hand(data) -> bool:
     return True
 
@@ -236,8 +216,6 @@ def check_for_open_hand(data) -> bool:
 # If nothing else matches, it will default to that
 class GestureType(Enum):
     # BEAST_BOY = partial(check_for_beastboy)
-    PEACE_SIGN = partial(check_for_peace_sign)
-    THUMB_EXTENDED = partial(check_for_thumb_extended)
     CLOSED_FIST = partial(check_for_closed_fist)
     RING_EXTENDED = partial(check_for_ring_extended)
     PINKY_EXTENDED = partial(check_for_pinky_extended)
