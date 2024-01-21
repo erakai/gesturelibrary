@@ -1,6 +1,6 @@
 from gestures.coord_translator import CoordTranslator
 from gestures.gesture_detector import GestureDetector, GestureType
-from gestures.media_processing import FrameData, MediaProcessor
+from gestures.media_processing import FrameData, Landmarks, MediaProcessor
 
 
 possible_gesture_map = {
@@ -18,26 +18,34 @@ possible_gesture_map = {
 
 
 class GestureMessage:
-    def __init__(self, x: int, y: int, gesture: str):
+    def __init__(self, x: int, y: int, px: int, py: int, gesture: str):
         self.x = x
         self.y = y
+        self.pointer_x = px
+        self.pointer_y = py
         self.gesture = gesture
 
 
 class GestureStream:
-    def __init__(self, translator, detector, process_data):
+    def __init__(self, translator, detector, process_data, dimensions):
         self.translator = translator
         self.detector = detector
         self.process_data = process_data
         self.processor = MediaProcessor(self.process_into_messages)
+        self.dimensions = dimensions
 
     def begin_read(self):
         self.processor.begin_processing()
 
     def process_into_messages(self, data: FrameData):
         x, y = self.translator.translate_coords(data)
+        pointer = data.fetch(Landmarks.INDEX_FINGER_TIP)
         msg = GestureMessage(
-            x, y, possible_gesture_map[self.detector.get_gesture(data)]
+            x,
+            y,
+            pointer.x * self.dimensions[0],
+            pointer.y * self.dimensions[1],
+            possible_gesture_map[self.detector.get_gesture(data)],
         )
         self.process_data(msg)
 
@@ -57,9 +65,7 @@ class GestureWrapper:
             self.stream.close()
 
         self.stream = GestureStream(
-            self.translator,
-            self.detector,
-            process_data,
+            self.translator, self.detector, process_data, self.dimensions
         )
 
         return self.stream
